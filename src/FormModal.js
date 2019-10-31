@@ -10,19 +10,25 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Switch from '@material-ui/core/Switch';
 
 const outcomeStatus = {
-  won: 'Won',
-  lost: 'Lost',
-  negotiating: 'Negotiating',
-  noAnswer: 'No Answer/VM',
+  WON: 'Won',
+  LOST: 'Lost',
+  NEGOTIATING: 'Negotiating',
+  NO_ANSWER_VM: 'No Answer/VM',
+  LOST_DO_NOT_CALL: 'Lost do not Call',
+  NO_LONGER_TRADING: 'No longer trading',
+  INCORRECT_INFO: 'Incorrect info'
 }
-const enableFeelingStatus = ['won', 'lost', 'negotiating'];
+
+const enableFeelingStatus = ['WON', 'LOST', 'NEGOTIATING'];
+const enableCallLater = ['NEGOTIATING', 'NO_ANSWER_VM'];
 
 const outcomeFeeling = {
-  negative: 'Negative',
-  positive: 'Positive',
-  neutral: 'Neutral',
+  NEGATIVE: 'Negative',
+  POSITIVE: 'Positive',
+  NEUTRAL: 'Neutral',
 }
 
 const useStyles = makeStyles(theme => ({
@@ -38,31 +44,43 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3, 6, 3),
   },
   textField: {
-    margin: theme.spacing(0, 0, 1),
+    margin: theme.spacing(1, 0, 1),
   },
   label: {
     padding: theme.spacing(1, 0, 1),
   }
 }));
 
-export default function SimpleModal({ open, handleClose, onSubmit }) {
+export default function SimpleModal({ formItem, open, handleClose, onSubmit }) {
   const classes = useStyles();
   const [outcome, setOutcome] = React.useState(null);
   const [comment, setComment] = React.useState('');
   const [feeling, setFeeling] = React.useState(null);
+  const [callLater, setCallLater] = React.useState(false);
   const handleChange = (event, setType) => {
     setType(event.target.value);
   };
+
+  const onClose = () => {
+    setOutcome(null)
+    setComment('')
+    setFeeling(null)
+    setCallLater(false)
+    handleClose()
+  };
+
   const handleSubmit = () => {
     if (outcome && comment) {
       onSubmit({
+        id: formItem.id,
         outcome,
         comment,
-        feeling
+        feeling,
+        callLater,
       })
-      handleClose()
+      onClose()
     }
-  }
+  };
 
   const renderRadioOptions = (optionObj) => {
     return Object.keys(optionObj).map((item, i) =>
@@ -76,8 +94,8 @@ export default function SimpleModal({ open, handleClose, onSubmit }) {
 
   return (
     <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
+      aria-labelledby="modal-ittle"
+      aria-describedby="modal-description"
       className={classes.modal}
       open={open}
       onClose={handleClose}
@@ -89,6 +107,7 @@ export default function SimpleModal({ open, handleClose, onSubmit }) {
     >
       <Fade in={open}>
         <div className={classes.paper}>
+        <h2 id="simple-modal-title">Feedback - {formItem.name}</h2>
           <FormControl>
             <FormLabel className={classes.label} component="legend">Outcome</FormLabel>
             <RadioGroup
@@ -112,6 +131,17 @@ export default function SimpleModal({ open, handleClose, onSubmit }) {
                 </RadioGroup>
               </>
             }
+            {enableCallLater.includes(outcome) &&
+              <>
+                <FormLabel className={classes.label} component="legend">Call Later</FormLabel>
+                <Switch
+                  checked={callLater}
+                  onChange={(e) => setCallLater(e.target.checked)}
+                  value="callLater"
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+              </>
+            }
             <TextField
               required
               value={comment}
@@ -131,7 +161,7 @@ export default function SimpleModal({ open, handleClose, onSubmit }) {
               onClick={handleSubmit}
             >
               Submit
-              </Button>
+            </Button>
           </FormControl>
         </div>
       </Fade>

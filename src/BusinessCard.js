@@ -10,6 +10,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Collapse, Link } from '@material-ui/core';
 import RadarChart from './RadarChart';
+import clsx from 'clsx';
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const avatarColorMapping = (score) => {
   switch (true) {
@@ -19,31 +22,40 @@ const avatarColorMapping = (score) => {
       return '#7cb342'
     case (score >= 5 && score < 7):
       return '#cddc39'
-    default: 
+    default:
       return '#bdbdbd'
   }
 }
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   card: {
-    marginBottom: 10,
-    paddingBottom: 5,
+    margin: '0 20px 10px 0',
+    paddingBottom: 5
   },
   avatar: {
     backgroundColor: props => avatarColorMapping(props),
     color: 'white'
-  }
-});
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+}));
 
 const BusinessCard = ({
   bizInfo,
   onClick,
   active,
-  onAddressClick,
-  onCallClick
+  onCallClick,
 }) => {
   const {
     score, id, geo, address,
-    name, phone, website,
+    name, website,
     quoteFromSuburb, description
   } = bizInfo;
   const classes = useStyles(score);
@@ -57,7 +69,7 @@ const BusinessCard = ({
         title={name}
       />
       <CardActionArea>
-        <CardContent onClick={() => onAddressClick(geo)}>
+        <CardContent onClick={() => onClick({ geo, id })}>
           <Typography variant="body2" color="textSecondary" component="p">
             {address}
           </Typography>
@@ -65,19 +77,15 @@ const BusinessCard = ({
       </CardActionArea>
       <CardActions>
         <Button
-          variant="contained"
-          size="small" color="primary" onClick={() => onClick({ geo, id })}>
-          {active === id ? 'Collapse' : 'Learn More'}
-        </Button>
-        <Button
+          style={{marginLeft: 10}}
           variant="contained"
           size="small"
           color="primary"
-          onClick={() => onCallClick(phone)}
+          onClick={() => onCallClick(bizInfo)}
         >
           Call
         </Button>
-        {/* <IconButton
+        <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: active === id,
           })}
@@ -85,8 +93,8 @@ const BusinessCard = ({
           aria-expanded={active === id}
           aria-label="show more"
         >
-          <Icon className="fa fa-plus-circle" />
-        </IconButton> */}
+          <ExpandMoreIcon />
+        </IconButton>
       </CardActions>
       <Collapse in={active === id} timeout="auto" unmountOnExit>
         <CardContent>

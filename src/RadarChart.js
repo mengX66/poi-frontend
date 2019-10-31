@@ -5,21 +5,21 @@ import RadarChart from 'react-svg-radar-chart';
 const data = [
   {
     data: {
-      matrix1: 0.7,
-      matrix2: 0.8,
-      matrix3: 0.9,
-      matrix4: 0.67,
-      matrix5: 0.8
+      metrics1: 0.7,
+      metrics2: 0.8,
+      metrics3: 0.9,
+      metrics4: 0.67,
+      metrics5: 0.8
     },
     meta: { color: '#80cbc4' }
   },
 ];
 const captions = {
-  matrix1: 'Matrix1',
-  matrix2: 'Matrix2',
-  matrix3: 'Matrix3',
-  matrix4: 'Matrix4',
-  matrix5: 'Matrix5'
+  metrics1: 'metrics1',
+  metrics2: 'metrics2',
+  metrics3: 'metrics3',
+  metrics4: 'metrics4',
+  metrics5: 'metrics5'
 };
 const Radar = () => {
   return (
