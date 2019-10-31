@@ -1,21 +1,22 @@
-# Create React App example
+# POI Frontend
 
-## How to use
-
-Download the example [or clone the repo](https://github.com/mui-org/material-ui):
+### How to install and run
 
 ```sh
-curl https://codeload.github.com/mui-org/material-ui/tar.gz/master | tar -xz --strip=2 material-ui-master/examples/create-react-app
-cd create-react-app
+yarn
+yarn start
 ```
+http://localhost:3000/
 
-Install it and run:
+### Import Google map api key
+
+create .env file under the root directory
+
+```js
+REACT_APP_GOOGLE_MAP_API_KEY = {API_KEY}
+```
+### How to build
 
 ```sh
-npm install
-npm start
+yarn build
 ```
-
-## The idea behind the example
-
-This example demonstrates how you can use [Create React App](https://github.com/facebookincubator/create-react-app).
