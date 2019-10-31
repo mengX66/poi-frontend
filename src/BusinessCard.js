@@ -13,22 +13,11 @@ import RadarChart from './RadarChart';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { avatarColorMapping } from './utils/utils';
 
-const avatarColorMapping = (score) => {
-  switch (true) {
-    case (score >= 9):
-      return '#2e7d32'
-    case (score >= 7 && score < 9):
-      return '#7cb342'
-    case (score >= 5 && score < 7):
-      return '#cddc39'
-    default:
-      return '#bdbdbd'
-  }
-}
 const useStyles = makeStyles(theme => ({
   card: {
-    margin: '0 20px 10px 0',
+    margin: '10px 0',
     paddingBottom: 5
   },
   avatar: {
@@ -77,7 +66,7 @@ const BusinessCard = ({
       </CardActionArea>
       <CardActions>
         <Button
-          style={{marginLeft: 10}}
+          style={{ marginLeft: 10 }}
           variant="contained"
           size="small"
           color="primary"

@@ -3,6 +3,12 @@ import Map from './Map/index';
 import BusinessCard from './BusinessCard';
 import SelectBox from './SelectBox';
 import FormModal from './FormModal';
+import { AppBar, Tabs, Tab, Fab } from '@material-ui/core';
+import TabPanel from './TabPanel';
+import { appUseStyles } from './styles/style';
+import Brightness3Icon from '@material-ui/icons/Brightness3';
+import Brightness5Icon from '@material-ui/icons/Brightness5';
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 // TODO: Mocked
 const businessList = [
@@ -13,21 +19,20 @@ const businessList = [
   { id: 4, name: 'Shop 5', phone: '+61412345678', geo: { lat: -33.8773069, lng: 151.1996451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 5.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' }
 ];
 
+const savedBusinessList = [
+  { id: 3, name: 'Shop 4', phone: '+61412345678', geo: { lat: -33.8713069, lng: 151.2006451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 7.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' },
+  { id: 4, name: 'Shop 5', phone: '+61412345678', geo: { lat: -33.8773069, lng: 151.1996451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 5.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' }
+];
+
 const App = () => {
+  const classes = appUseStyles();
   const [geo, setGeo] = useState(null);
   const [category, setCategory] = useState(0);
   const [active, setActive] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [formItem, setFormItem] = React.useState(false);
-
-  const rightStyle = {
-    position: 'absolute',
-    left: '65%',
-    top: 0,
-    padding: '20px 0 20px 20px',
-    width: '35%',
-    overflowY: 'scroll'
-  };
+  const [tab, setTab] = React.useState('category');
+  const [dark, setDark] = React.useState(false);
 
   const onCardClick = ({ geo, id }) => {
     setGeo(geo)
@@ -46,25 +51,59 @@ const App = () => {
 
   const onSubmit = (feedback) => {
     console.log(feedback)
-    
+
   }
+
+  function a11yProps(index) {
+    return {
+      id: `full-width-tab-${index}`,
+      'aria-controls': `wrapped-tabpanel-${index}`,
+    };
+  }
+
+  const renderBizCards = (bizList) => {
+    return bizList.map(item =>
+      <BusinessCard
+        active={active}
+        key={item.id}
+        bizInfo={item}
+        onCallClick={onCallClick}
+        onClick={onCardClick} />
+    )
+  };
+
+  const muiTheme = createMuiTheme({
+    palette: {
+      type: dark ? 'dark' : 'light',
+    }
+  });
+
   return (
-    <>
+    <MuiThemeProvider theme={muiTheme}>
       <Map geo={geo} />
-      <div style={rightStyle}>
-        <SelectBox category={category} onSelect={onSelect} />
-        <div style={{
-          maxHeight: '88vh', overflow: 'auto'
-        }}>
-          {businessList.map(item =>
-            <BusinessCard
-              active={active}
-              key={item.id}
-              bizInfo={item}
-              onCallClick={onCallClick}
-              onClick={onCardClick} />
-          )}
-        </div>
+      <div className={classes.rightStyle}>
+        <AppBar position="static">
+          <Tabs variant="fullWidth" value={tab} onChange={(e, newValue) => setTab(newValue)} aria-label="wrapped label tabs example">
+            <Tab
+              value="category"
+              label="All Business"
+
+              {...a11yProps('category')}
+            />
+            <Tab value="saved" label="Saved Business" {...a11yProps('saved')} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={tab} index="category">
+          <SelectBox category={category} onSelect={onSelect} />
+          <div className={classes.bizList}>
+            {renderBizCards(businessList)}
+          </div>
+        </TabPanel>
+        <TabPanel value={tab} index="saved">
+          <div className={classes.bizList} style={{ maxHeight: '93vh' }}>
+            {renderBizCards(savedBusinessList)}
+          </div>
+        </TabPanel>
         <FormModal
           formItem={formItem}
           active={active}
@@ -72,8 +111,13 @@ const App = () => {
           open={open}
           handleClose={() => setOpen(false)}
         />
+        <Fab aria-label="theme"
+          onClick={() => setDark(dark ? false : true)}
+          className={classes.fab} color='default'>
+          {dark ? <Brightness3Icon /> : <Brightness5Icon />}
+        </Fab>
       </div>
-    </>
+    </MuiThemeProvider>
   );
 }
 
