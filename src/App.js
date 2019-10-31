@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from './Map/index';
 import BusinessCard from './BusinessCard';
 import SelectBox from './SelectBox';
@@ -9,6 +9,8 @@ import { appUseStyles } from './styles/style';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import axios from 'axios';
+import { async } from 'q';
 
 // TODO: Mocked
 const businessList = [
@@ -25,14 +27,25 @@ const savedBusinessList = [
 ];
 
 const App = () => {
+  const [categories, setCategories] = useState([]);
   const classes = appUseStyles();
   const [geo, setGeo] = useState(null);
-  const [category, setCategory] = useState(0);
+  const [category, setCategory] = useState(null);
   const [active, setActive] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [formItem, setFormItem] = React.useState(false);
   const [tab, setTab] = React.useState('category');
   const [dark, setDark] = React.useState(false);
+  const [bizList, setBizList] = React.useState([]);
+  useEffect(async () => {
+    axios.get('https://pio.staging.oneflare.com.au/api/v5/poi_categories')
+  .then((response) => {
+    if(response.status === 200) setCategories(response.data)
+  }).catch(error => {
+    console.log(error)
+  });
+  }, []);
+
 
   const onCardClick = ({ geo, id }) => {
     setGeo(geo)
@@ -41,12 +54,20 @@ const App = () => {
 
   const onSelect = (categoryId) => {
     setCategory(categoryId)
+      axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${categoryId}/poi_businesses`)
+    .then((response) => {
+      console.log(response.data.slice(0,20))
+      if(response.status === 200) setBizList(response.data.slice(0,20))
+    }).catch(error => {
+      console.log(error)
+    });
+  
   };
 
   const onCallClick = (item) => {
     setOpen(true);
     setFormItem(item)
-    // window.open(`tel:${item.phone}`)
+    window.open(`tel:${item.phone}`)
   }
 
   const onSubmit = (feedback) => {
@@ -94,9 +115,9 @@ const App = () => {
           </Tabs>
         </AppBar>
         <TabPanel value={tab} index="category">
-          <SelectBox category={category} onSelect={onSelect} />
+          <SelectBox category={category} onSelect={onSelect} categoryList={categories} />
           <div className={classes.bizList}>
-            {renderBizCards(businessList)}
+            {category ? renderBizCards(bizList) : 'Welcome'}
           </div>
         </TabPanel>
         <TabPanel value={tab} index="saved">

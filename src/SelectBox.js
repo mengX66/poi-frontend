@@ -5,12 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-const categoryList = [
-  { id: 0, name: 'Celebrating' },
-  { id: 1, name: 'Cleaner' },
-  { id: 2, name: 'Plumber' }
-];
-
 const useStyles = makeStyles(theme => ({
   button: {
     display: 'block',
@@ -23,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SelectBox = ({ category, onSelect }) => {
+const SelectBox = ({ categoryList, category, onSelect }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -45,7 +39,7 @@ const SelectBox = ({ category, onSelect }) => {
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={category}
+        value={category || ''}
         onChange={(event) => onSelect(event.target.value)}
       >
         {categoryList.map(item =>

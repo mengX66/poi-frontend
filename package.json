@@ -11,6 +11,7 @@
   "dependencies": {
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.5.1",
+    "axios": "^0.19.0",
     "clsx": "latest",
     "google-maps-react": "^2.0.2",
     "react": "latest",
