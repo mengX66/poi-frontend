@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(3, 6, 3),
+    padding: theme.spacing(2, 6, 2),
   },
   textField: {
     margin: theme.spacing(1, 0, 1),
@@ -76,7 +76,7 @@ export default function SimpleModal({ formItem, open, handleClose, onSubmit, cat
           outcome: parseInt(outcome),
           note: comment,
           feeling,
-          call_Later: callLater,
+          call_later: callLater,
         },
         id: formItem.id,
         categoryId,
@@ -110,7 +110,7 @@ export default function SimpleModal({ formItem, open, handleClose, onSubmit, cat
     >
       <Fade in={open}>
         <div className={classes.paper}>
-          <h2 id="simple-modal-title">Feedback - {formItem.name}</h2>
+          <h2 style={{maxWidth: 270}}id="simple-modal-title">Feedback - {formItem.name}</h2>
           <FormControl>
             <FormLabel className={classes.label} component="legend">Outcome</FormLabel>
             <RadioGroup

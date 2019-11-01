@@ -21,22 +21,27 @@ const BusinessCard = ({
   onCallClick,
 }) => {
   const {
-    score, id, latitude, longitude, address,
+    final_score, id, latitude, longitude, address,
     name, website, suburb, state,
     quoteFromSuburb, description, m1, m2, m3, m4, m5
   } = bizInfo;
+  
+  const score = parseFloat(final_score).toFixed(1);
+  const prepareMetricsValue = (m) => {
+    return parseFloat(parseFloat(m).toFixed(1))/10;
+  };
   const metrics = {
-    metrics1: typeof (m1) === Number ? m1 : 0.7,
-    metrics2: typeof (m2) === Number ? m2 : 0.8,
-    metrics3: typeof (m3) === Number ? m2 : 0.9,
-    metrics4: typeof (m4) === Number ? m4 : 0.67,
-    metrics5: typeof (m5) === Number ? m5 : 0.8
+    metrics1: prepareMetricsValue(m1),
+    metrics2: prepareMetricsValue(m2),
+    metrics3: prepareMetricsValue(m3),
+    metrics4: prepareMetricsValue(m4),
+    metrics5: prepareMetricsValue(m5)
   }
   const geo = {
     lat: latitude || -33.8682645,
     lng: longitude || 151.2015845
   }
-  const classes = cardUseStyles(score);
+  const classes = cardUseStyles(parseInt(score));
 
   return (
     <Card className={classes.card}>

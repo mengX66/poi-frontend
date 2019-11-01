@@ -29,6 +29,7 @@ const App = () => {
   const [message, setMessage] = React.useState(false);
 
   useEffect(() => {
+    // axios.get('https://fleo.serveo.net/api/v5/poi_categories')
     axios.get('https://pio.staging.oneflare.com.au/api/v5/poi_categories')
       .then((response) => {
         response.status === 200 && setCategories(response.data)
@@ -54,7 +55,7 @@ const App = () => {
 
   const onSubmit = ({ payload, id, categoryId }) => {
     // TODO: 
-    // axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+    // axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/1786/poi_responses`, null, { params: payload })
     axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
       .then((response) => {
         if (response.status === 200) {
@@ -86,6 +87,7 @@ const App = () => {
   };
 
   async function fetchBiz(categoryId) {
+    // axios.get(`https://fleo.serveo.net/api/v5/poi_categories/${categoryId}/poi_businesses`)
     axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${categoryId}/poi_businesses`)
       .then((response) => {
         if (response.status === 200) setBizList(response.data.slice(0, 20))
@@ -95,6 +97,7 @@ const App = () => {
   }
 
   async function fetchSaved() {
+    setActive(null)
     // TODO
     // axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
     axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/search`, { params: { call_later: true } })
