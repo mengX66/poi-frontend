@@ -29,14 +29,14 @@ const App = () => {
   useEffect(async () => {
     axios.get('https://pio.staging.oneflare.com.au/api/v5/poi_categories')
       .then((response) => {
-        if (response.status === 200) setCategories(response.data)
+        response.status === 200 && setCategories(response.data)
       }).catch(error => {
         console.log(error)
       });
   }, []);
 
   const onCardClick = ({ geo, id }) => {
-    setGeo(geo)
+    active !== id && setGeo(geo)
     setActive(active === id ? null : id)
   };
 
@@ -52,8 +52,8 @@ const App = () => {
 
   const onSubmit = ({ payload, id, categoryId }) => {
     // TODO: 
-    axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
-      // axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+    // axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+      axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
       .then((response) => {
         if (response.status === 200) {
           fetchBiz(categoryId);
@@ -93,8 +93,8 @@ const App = () => {
 
   function fetchSaved() {
     // TODO
-    axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
-      // axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${category || 1}/poi_businesses`, { call_later: true })
+    // axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
+    axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/search`, { params: { call_later: true } })
       .then((response) => {
         if (response.status === 200) setSavedBizList(response.data.slice(0, 20))
       }).catch(error => {

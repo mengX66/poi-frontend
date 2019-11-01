@@ -15,7 +15,6 @@ const Radar = ({metrics}) => {
     metrics4: 'Business Authenticity ',
     metrics5: 'Experience'
   };
-  console.log(data)
 
   return (
     <RadarChart
