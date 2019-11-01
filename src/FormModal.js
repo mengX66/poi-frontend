@@ -13,17 +13,17 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 
 const outcomeStatus = {
-  1: 'Won',
-  2: 'Lost',
-  3: 'Negotiating',
-  4: 'No Answer/VM',
-  5: 'Lost do not Call',
-  6: 'No longer trading',
-  7: 'Incorrect info'
+  0: 'Won',
+  1: 'Lost',
+  2: 'Negotiating',
+  3: 'No Answer/VM',
+  4: 'Lost do not Call',
+  5: 'No longer trading',
+  6: 'Incorrect info'
 }
 
-const enableFeelingStatus = ['1', '2', '3'];
-const enableCallLater = ['3', '4'];
+const enableFeelingStatus = ['0', '1', '2'];
+const enableCallLater = ['2', '3'];
 
 const outcomeFeeling = {
   NEGATIVE: 'Negative',
@@ -152,7 +152,7 @@ export default function SimpleModal({ formItem, open, handleClose, onSubmit, cat
               id="outlined-multiline-static"
               label="Comment"
               multiline
-              rows="4"
+              rows="2"
               className={classes.textField}
               margin="normal"
               variant="outlined"

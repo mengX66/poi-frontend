@@ -11,6 +11,7 @@ import Brightness3Icon from '@material-ui/icons/Brightness3';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import axios from 'axios';
+import Snackbar from './snackBar';
 
 const App = () => {
   const classes = appUseStyles();
@@ -25,8 +26,9 @@ const App = () => {
   const [dark, setDark] = React.useState(false);
   const [bizList, setBizList] = React.useState([]);
   const [savedBizList, setSavedBizList] = React.useState([]);
+  const [message, setMessage] = React.useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
     axios.get('https://pio.staging.oneflare.com.au/api/v5/poi_categories')
       .then((response) => {
         response.status === 200 && setCategories(response.data)
@@ -53,11 +55,12 @@ const App = () => {
   const onSubmit = ({ payload, id, categoryId }) => {
     // TODO: 
     // axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
-      axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+    axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
       .then((response) => {
         if (response.status === 200) {
           fetchBiz(categoryId);
           console.log('Re-fetch!')
+          setMessage(true)
         }
       }).catch(error => {
         console.log(error)
@@ -82,7 +85,7 @@ const App = () => {
     )
   };
 
-  const fetchBiz = (categoryId) => {
+  async function fetchBiz(categoryId) {
     axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${categoryId}/poi_businesses`)
       .then((response) => {
         if (response.status === 200) setBizList(response.data.slice(0, 20))
@@ -91,7 +94,7 @@ const App = () => {
       });
   }
 
-  function fetchSaved() {
+  async function fetchSaved() {
     // TODO
     // axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
     axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/search`, { params: { call_later: true } })
@@ -127,7 +130,8 @@ const App = () => {
           <SelectBox category={category} onSelect={onSelect} categoryList={categories} />
           <div className={classes.bizList}>
             {category ? renderBizCards(bizList) :
-              <Typography className={classes.welcome}>👋 Welcome to POI Rating System!</Typography>
+              <Typography className={classes.welcome}><span role="img" aria-label="greeting">👋 </span>
+                Welcome to POI Rating System!</Typography>
             }
           </div>
         </TabPanel>
@@ -146,10 +150,11 @@ const App = () => {
         />
       </div>
       <Fab aria-label="theme"
-        onClick={() => setDark(dark ? false : true)}
+        onClick={() => setDark(!dark)}
         className={classes.fab} color={dark ? 'secondary' : 'default'}>
         {dark ? <Brightness7Icon /> : <Brightness3Icon />}
       </Fab>
+      <Snackbar open={message} setOpen={setMessage} />
     </MuiThemeProvider>
   );
 }
