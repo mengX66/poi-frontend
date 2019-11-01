@@ -18,6 +18,7 @@ export const appUseStyles = makeStyles(theme => (
       bottom: theme.spacing(2),
       right: theme.spacing(2),
     },
+    welcome: {display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400}
   }));
 
  export const cardUseStyles = makeStyles(theme => ({

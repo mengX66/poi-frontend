@@ -13,17 +13,17 @@ import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
 
 const outcomeStatus = {
-  WON: 'Won',
-  LOST: 'Lost',
-  NEGOTIATING: 'Negotiating',
-  NO_ANSWER_VM: 'No Answer/VM',
-  LOST_DO_NOT_CALL: 'Lost do not Call',
-  NO_LONGER_TRADING: 'No longer trading',
-  INCORRECT_INFO: 'Incorrect info'
+  1: 'Won',
+  2: 'Lost',
+  3: 'Negotiating',
+  4: 'No Answer/VM',
+  5: 'Lost do not Call',
+  6: 'No longer trading',
+  7: 'Incorrect info'
 }
 
-const enableFeelingStatus = ['WON', 'LOST', 'NEGOTIATING'];
-const enableCallLater = ['NEGOTIATING', 'NO_ANSWER_VM'];
+const enableFeelingStatus = ['1', '2', '3'];
+const enableCallLater = ['3', '4'];
 
 const outcomeFeeling = {
   NEGATIVE: 'Negative',
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SimpleModal({ formItem, open, handleClose, onSubmit }) {
+export default function SimpleModal({ formItem, open, handleClose, onSubmit, categoryId }) {
   const classes = useStyles();
   const [outcome, setOutcome] = React.useState(null);
   const [comment, setComment] = React.useState('');
@@ -72,11 +72,14 @@ export default function SimpleModal({ formItem, open, handleClose, onSubmit }) {
   const handleSubmit = () => {
     if (outcome && comment) {
       onSubmit({
+        payload: {
+          outcome: parseInt(outcome),
+          note: comment,
+          feeling,
+          call_Later: callLater,
+        },
         id: formItem.id,
-        outcome,
-        comment,
-        feeling,
-        callLater,
+        categoryId,
       })
       onClose()
     }
@@ -107,7 +110,7 @@ export default function SimpleModal({ formItem, open, handleClose, onSubmit }) {
     >
       <Fade in={open}>
         <div className={classes.paper}>
-        <h2 id="simple-modal-title">Feedback - {formItem.name}</h2>
+          <h2 id="simple-modal-title">Feedback - {formItem.name}</h2>
           <FormControl>
             <FormLabel className={classes.label} component="legend">Outcome</FormLabel>
             <RadioGroup

@@ -1,34 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Map from './Map/index';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import BusinessCard from './BusinessCard';
 import SelectBox from './SelectBox';
 import FormModal from './FormModal';
-import { AppBar, Tabs, Tab, Fab } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Fab, Typography } from '@material-ui/core';
 import TabPanel from './TabPanel';
 import { appUseStyles } from './styles/style';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
-import Brightness5Icon from '@material-ui/icons/Brightness5';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import axios from 'axios';
-import { async } from 'q';
-
-// TODO: Mocked
-const businessList = [
-  { id: 0, name: 'Shop 1', phone: '+61412345678', geo: { lat: -33.877959, lng: 151.1995674 }, address: 'Shop 33 1 Rider Blvd, Rhodes, NSW 2138', score: 9.5, quoteFromSuburb: 40, website: 'http://www.google.com', description: 'Whatever' },
-  { id: 1, name: 'Shop 2', phone: '+61412345678', geo: { lat: -33.8745281, lng: 151.2039918 }, address: '20 Braemar St, Mascot NSW 2138', score: 8.9, quoteFromSuburb: 30, website: 'http://www.google.com', description: 'Whatever' },
-  { id: 2, name: 'Shop 3', phone: '+61412345678', geo: { lat: -33.8783069, lng: 151.2006451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 8.6, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' },
-  { id: 3, name: 'Shop 4', phone: '+61412345678', geo: { lat: -33.8713069, lng: 151.2006451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 7.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' },
-  { id: 4, name: 'Shop 5', phone: '+61412345678', geo: { lat: -33.8773069, lng: 151.1996451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 5.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' }
-];
-
-const savedBusinessList = [
-  { id: 3, name: 'Shop 4', phone: '+61412345678', geo: { lat: -33.8713069, lng: 151.2006451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 7.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' },
-  { id: 4, name: 'Shop 5', phone: '+61412345678', geo: { lat: -33.8773069, lng: 151.1996451 }, address: 'Shop 4, 12 Nicolle Walk, Darling Square, Haymarket NSW 2000', score: 5.5, quoteFromSuburb: 20, website: 'http://www.google.com', description: 'Whatever' }
-];
 
 const App = () => {
-  const [categories, setCategories] = useState([]);
   const classes = appUseStyles();
+
+  const [categories, setCategories] = useState([]);
   const [geo, setGeo] = useState(null);
   const [category, setCategory] = useState(null);
   const [active, setActive] = React.useState(null);
@@ -37,15 +24,16 @@ const App = () => {
   const [tab, setTab] = React.useState('category');
   const [dark, setDark] = React.useState(false);
   const [bizList, setBizList] = React.useState([]);
+  const [savedBizList, setSavedBizList] = React.useState([]);
+
   useEffect(async () => {
     axios.get('https://pio.staging.oneflare.com.au/api/v5/poi_categories')
-  .then((response) => {
-    if(response.status === 200) setCategories(response.data)
-  }).catch(error => {
-    console.log(error)
-  });
+      .then((response) => {
+        if (response.status === 200) setCategories(response.data)
+      }).catch(error => {
+        console.log(error)
+      });
   }, []);
-
 
   const onCardClick = ({ geo, id }) => {
     setGeo(geo)
@@ -54,25 +42,26 @@ const App = () => {
 
   const onSelect = (categoryId) => {
     setCategory(categoryId)
-      axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${categoryId}/poi_businesses`)
-    .then((response) => {
-      console.log(response.data.slice(0,20))
-      if(response.status === 200) setBizList(response.data.slice(0,20))
-    }).catch(error => {
-      console.log(error)
-    });
-  
+    fetchBiz(categoryId)
   };
 
   const onCallClick = (item) => {
     setOpen(true);
     setFormItem(item)
-    window.open(`tel:${item.phone}`)
   }
 
-  const onSubmit = (feedback) => {
-    console.log(feedback)
-
+  const onSubmit = ({ payload, id, categoryId }) => {
+    // TODO: 
+    axios.post(`https://fleo.serveo.net/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+      // axios.post(`https://pio.staging.oneflare.com.au/api/v5/poi_businesses/${id}/poi_responses`, null, { params: payload })
+      .then((response) => {
+        if (response.status === 200) {
+          fetchBiz(categoryId);
+          console.log('Re-fetch!')
+        }
+      }).catch(error => {
+        console.log(error)
+      });
   }
 
   function a11yProps(index) {
@@ -93,14 +82,35 @@ const App = () => {
     )
   };
 
+  const fetchBiz = (categoryId) => {
+    axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${categoryId}/poi_businesses`)
+      .then((response) => {
+        if (response.status === 200) setBizList(response.data.slice(0, 20))
+      }).catch(error => {
+        console.log(error)
+      });
+  }
+
+  const fetchSaved = () => {
+    // TODO
+    axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
+      // axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${category || 1}/poi_businesses`, { call_later: true })
+      .then((response) => {
+        if (response.status === 200) setSavedBizList(response.data.slice(0, 20))
+      }).catch(error => {
+        console.log(error)
+      });
+  }
+
   const muiTheme = createMuiTheme({
     palette: {
-      type: dark ? 'dark' : 'light',
+      type: dark ? 'dark' : 'light'
     }
   });
 
   return (
     <MuiThemeProvider theme={muiTheme}>
+      <CssBaseline />
       <Map geo={geo} />
       <div className={classes.rightStyle}>
         <AppBar position="static">
@@ -108,36 +118,38 @@ const App = () => {
             <Tab
               value="category"
               label="All Business"
-
               {...a11yProps('category')}
             />
-            <Tab value="saved" label="Saved Business" {...a11yProps('saved')} />
+            <Tab onClick={fetchSaved} value="saved" label="Saved Business" {...a11yProps('saved')} />
           </Tabs>
         </AppBar>
         <TabPanel value={tab} index="category">
           <SelectBox category={category} onSelect={onSelect} categoryList={categories} />
           <div className={classes.bizList}>
-            {category ? renderBizCards(bizList) : 'Welcome'}
+            {category ? renderBizCards(bizList) :
+              <Typography className={classes.welcome}>👋 Welcome to POI Rating System!</Typography>
+            }
           </div>
         </TabPanel>
         <TabPanel value={tab} index="saved">
           <div className={classes.bizList} style={{ maxHeight: '93vh' }}>
-            {renderBizCards(savedBusinessList)}
+            {renderBizCards(savedBizList)}
           </div>
         </TabPanel>
         <FormModal
+          categoryId={category}
           formItem={formItem}
           active={active}
           onSubmit={onSubmit}
           open={open}
           handleClose={() => setOpen(false)}
         />
-        <Fab aria-label="theme"
-          onClick={() => setDark(dark ? false : true)}
-          className={classes.fab} color='default'>
-          {dark ? <Brightness3Icon /> : <Brightness5Icon />}
-        </Fab>
       </div>
+      <Fab aria-label="theme"
+        onClick={() => setDark(dark ? false : true)}
+        className={classes.fab} color={dark ? 'secondary' : 'default'}>
+        {dark ? <Brightness7Icon /> : <Brightness3Icon />}
+      </Fab>
     </MuiThemeProvider>
   );
 }

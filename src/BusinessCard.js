@@ -23,12 +23,18 @@ const BusinessCard = ({
   const {
     score, id, latitude, longitude, address,
     name, website, suburb, state,
-    quoteFromSuburb, description
+    quoteFromSuburb, description, m1, m2, m3, m4, m5
   } = bizInfo;
-
+  const metrics = {
+    metrics1: typeof(m1) === Number ? m1 : 0.7,
+    metrics2: typeof(m2) === Number ? m2 : 0.8,
+    metrics3: typeof(m3) === Number ? m2 : 0.9,
+    metrics4: typeof(m4) === Number ? m4 : 0.67,
+    metrics5: typeof(m5) === Number ? m5 : 0.8
+  }
   const geo = {
-    lat: latitude,
-    lng: longitude
+    lat: latitude || -33.8682645,
+    lng: longitude || 151.2015845
   }
   const classes = cardUseStyles(score);
 
@@ -37,13 +43,13 @@ const BusinessCard = ({
       <CardHeader
         title={name}
         action={
-          <Avatar className={classes.avatar}>{score}</Avatar>
+          <Avatar className={classes.avatar}>{score || 'N/A'}</Avatar>
         }
       />
       <CardActionArea>
         <CardContent onClick={() => onClick({ geo, id })}>
           <Typography variant="body2" color="textSecondary" component="p">
-            {`${address} ${suburb} ${state}`}
+            {`Address: ${address || ''} ${suburb || ''} ${state || ''}`}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -55,7 +61,7 @@ const BusinessCard = ({
           color="primary"
           onClick={() => onCallClick(bizInfo)}
         >
-          Call
+          <a style={{textDecoration: 'none', color: 'white'}}href={`tel:${bizInfo.phone}`}>Call</a>
         </Button>
         <IconButton
           className={clsx(classes.expand, {
@@ -80,7 +86,7 @@ const BusinessCard = ({
           }
           {description && <Typography paragraph>Description: {description}</Typography>}
           {quoteFromSuburb && <Typography paragraph>Job received in the same area: {quoteFromSuburb}</Typography>}
-          <RadarChart />
+          <RadarChart metrics={metrics} />
         </CardContent>
       </Collapse>
     </Card>

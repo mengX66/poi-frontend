@@ -1,7 +1,7 @@
 import React from 'react';
 import { Map, Marker } from 'google-maps-react';
 
-const MapContainer = ({geo, google}) => {
+const MapContainer = ({ geo, google }) => {
   const mapStyles = {
     width: '65%',
     height: '100%',
@@ -18,7 +18,7 @@ const MapContainer = ({geo, google}) => {
       <Marker
         position={geo}
         animation={google.maps.Animation.DROP}
-        />
+      />
     </Map>
   );
 }
