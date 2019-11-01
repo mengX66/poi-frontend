@@ -91,7 +91,7 @@ const App = () => {
       });
   }
 
-  const fetchSaved = () => {
+  function fetchSaved() {
     // TODO
     axios.get(`https://fleo.serveo.net/api/v5/poi_businesses/search`, { params: { call_later: true } })
       // axios.get(`https://pio.staging.oneflare.com.au/api/v5/poi_categories/${category || 1}/poi_businesses`, { call_later: true })

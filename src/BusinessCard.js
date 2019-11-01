@@ -26,11 +26,11 @@ const BusinessCard = ({
     quoteFromSuburb, description, m1, m2, m3, m4, m5
   } = bizInfo;
   const metrics = {
-    metrics1: typeof(m1) === Number ? m1 : 0.7,
-    metrics2: typeof(m2) === Number ? m2 : 0.8,
-    metrics3: typeof(m3) === Number ? m2 : 0.9,
-    metrics4: typeof(m4) === Number ? m4 : 0.67,
-    metrics5: typeof(m5) === Number ? m5 : 0.8
+    metrics1: typeof (m1) === Number ? m1 : 0.7,
+    metrics2: typeof (m2) === Number ? m2 : 0.8,
+    metrics3: typeof (m3) === Number ? m2 : 0.9,
+    metrics4: typeof (m4) === Number ? m4 : 0.67,
+    metrics5: typeof (m5) === Number ? m5 : 0.8
   }
   const geo = {
     lat: latitude || -33.8682645,
@@ -49,7 +49,7 @@ const BusinessCard = ({
       <CardActionArea>
         <CardContent onClick={() => onClick({ geo, id })}>
           <Typography variant="body2" color="textSecondary" component="p">
-            {`Address: ${address || ''} ${suburb || ''} ${state || ''}`}
+            {`Address: ${address || '1'}${suburb ? `, ${suburb}` : ''}${state ? `, ${state}` : ''}`}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -61,7 +61,7 @@ const BusinessCard = ({
           color="primary"
           onClick={() => onCallClick(bizInfo)}
         >
-          <a style={{textDecoration: 'none', color: 'white'}}href={`tel:${bizInfo.phone}`}>Call</a>
+          <a style={{ textDecoration: 'none', color: 'white' }} href={`tel:${bizInfo.phone}`}>Call</a>
         </Button>
         <IconButton
           className={clsx(classes.expand, {
